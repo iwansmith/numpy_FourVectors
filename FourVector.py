@@ -20,8 +20,18 @@ class FourVector():
 
 
 	
-	def __init__(self, *argv ):
+	def __init__(self, *argv, **kwargs ):
 		#Try assuming the input is a 4D structured numpy array of type PE, PX, PY, PZ
+		
+		Debug = False
+		try:
+			Debug = kwargs["Debug"]
+		except:
+			pass
+		
+		
+		if Debug:
+			print "Trying initialiser 1"
 		try:
 			data = argv[0].copy().view(( argv[0].dtype[0], len(argv[0].dtype.names) ))
 			self.PE = data[:,0]
@@ -32,6 +42,8 @@ class FourVector():
 		
 		
 		#Try assuming the input data is a 4D ndarray non structured
+		if Debug:
+			print "Trying initialiser 2"
 		try:
 			data = argv[0].copy()
 			self.PE = data[:,0]
@@ -42,6 +54,8 @@ class FourVector():
 		
 		
 		#Try assuming the data is a 4D array
+		if Debug:
+			print "Trying initialiser 3"
 		try:
 			nev = argv[0].shape[0]
 			data = np.concatenate( (np.reshape(argv[0][0], (nev,1)), np.reshape(argv[0][1], (nev,1)), np.reshape(argv[0][2], (nev,1)), np.reshape(argv[0][3], (nev,1))), axis = 1 )
@@ -51,6 +65,8 @@ class FourVector():
 			pass
 		
 		#Try using four arguments of single values or lists:
+		if Debug:
+			print "Trying initialiser 4"
 		try:
 			self.PE = argv[0][3]
 			self.fP = ThreeVector(argv[0][:3])
@@ -58,40 +74,21 @@ class FourVector():
 		except:
 			pass
 
+		if Debug:
+			print "Trying initialiser 5"
 		try:
 			self.PE = argv[3]
 			self.fP = ThreeVector(argv[:3])
 			return
 		except:
 			pass
-		
-		
-
-		
 			
-	def SetXYZM(self, XYZ, M):
+		if Debug:
+			print "Trying default initialiser"
+		self.PE = np.asarray(0)
+		self.fP = ThreeVector()
 		
-		self.fP.SetXYZ( XYZ )
-		self.PE = np.sqrt( self.fP.P2() + np.square( M ) )
 		
-		
-	def SetX(self, X ):
-		self.fP.SetX(X)
-	def SetY(self, Y ):
-		self.fP.SetY(Y)
-	def SetZ(self, Z ):
-		self.fP.SetZ(Z)
-
-	
-	def PX( self ):
-		return self.fP.PX
-	
-	def PY( self ):
-		return self.fP.PY
-	
-	def PZ( self ):
-		return self.fP.PZ
-	
 	def __add__ ( self, vector2):
 		New4V = FourVector()
 		New4V.PE = self.PE + vector2.PE
@@ -124,7 +121,42 @@ class FourVector():
 	def __len__( self ):
 		return self.PE.shape[0]
 		
+
 		
+			
+	def SetXYZM(self, *argv):
+		
+		try:
+			self.fP.SetXYZ( *argv[:3] )
+			self.PE = np.sqrt( self.fP.P2() + np.square( argv[3] ) )
+			return
+		except:
+			pass
+
+		try:
+			self.fP.SetXYZ( argv[0] )
+			self.PE = np.sqrt( self.fP.P2() + np.square( argv[1] ) )
+			return
+		except:
+			pass
+		
+	def SetX(self, X ):
+		self.fP.SetX(X)
+	def SetY(self, Y ):
+		self.fP.SetY(Y)
+	def SetZ(self, Z ):
+		self.fP.SetZ(Z)
+
+	
+	def PX( self ):
+		return self.fP.PX
+	
+	def PY( self ):
+		return self.fP.PY
+	
+	def PZ( self ):
+		return self.fP.PZ
+	
 		
 	def Vect(self):
 		return self.fP

@@ -5,8 +5,17 @@ import math
 class ThreeVector:
 
 
-	def __init__(self, *argv ):
-
+	def __init__(self, *argv, **kwargs):
+		
+		Debug = False
+		try:
+			Debug = kwargs["Debug"]
+		except:
+			pass
+		
+		
+		if Debug:
+			print "Trying initialiser 1"
 		try:
 			data = argv[0].copy().view(( argv[0].dtype[0], len(argv[0].dtype.names) ))
 			self.PX = data[:,0]
@@ -16,6 +25,8 @@ class ThreeVector:
 		except:
 			pass
 		
+		if Debug:
+			print "Trying initialiser 2"
 		try:
 			data = argv[0].copy()
 			self.PX = data[:,0]
@@ -25,6 +36,8 @@ class ThreeVector:
 		except:
 			pass
 
+		if Debug:
+			print "Trying initialiser 3"
 		try:
 			nev = argv[0][0].shape[0]
 			data = np.concatenate( (np.reshape(argv[0][0], (nev,1)), np.reshape(argv[0][1], (nev,1)), np.reshape(argv[0][2], (nev,1))), axis = 1 )
@@ -35,39 +48,51 @@ class ThreeVector:
 		except:
 			pass
 			
+		if Debug:
+			print "Trying initialiser 4"
 		try:
-			self.PX = argv[0][0]
-			self.PY = argv[0][1]
-			self.PZ = argv[0][2]
+			self.PX = np.asarray(argv[0][0])
+			self.PY = np.asarray(argv[0][1])
+			self.PZ = np.asarray(argv[0][2])
+			return
+		except:
+			pass
+		
+		if Debug:
+			print "Trying initialiser 5"
+		try:
+			self.PX = np.asarray(argv[0])
+			self.PY = np.asarray(argv[1])
+			self.PZ = np.asarray(argv[2])
+			return
+		except:
+			pass
+			
+		if Debug:
+			print "Trying Default initialiser"
+		self.PX = np.asarray(0)
+		self.PY = np.asarray(0)
+		self.PZ = np.asarray(0)
+		
+		
+	def SetXYZ(self, *argv):
+		try:
+			self.PX = argv[0].PX.copy()
+			self.PY = argv[0].PY.copy()
+			self.PZ = argv[0].PZ.copy()
 			return
 		except:
 			pass
 		
 		try:
-			self.PX = argv[0]
-			self.PY = argv[1]
-			self.PZ = argv[2]
+			self.PX = np.asarray(argv[0])
+			self.PY = np.asarray(argv[1])
+			self.PZ = np.asarray(argv[2])
 			return
 		except:
 			pass
 		
-	def SetXYZ(self, XYZ):
-		#try:
-		self.PX = XYZ.PX.copy()
-		self.PY = XYZ.PY.copy()
-		self.PZ = XYZ.PZ.copy()
-		"""
-		except:
-			try:
-				XYZ2 = XYZ.copy().view(( XYZ.dtype[0], len(XYZ.dtype.names) ))
-			except:
-				XYZ2 = XYZ.copy()
-				
-			self.PX = XYZ2[:,0]
-			self.PY = XYZ2[:,1]
-			self.PZ = XYZ2[:,2]
-		"""
-	
+		
 	def SetX(self, X):
 		try:
 			self.PX = X.copy().view(( X.dtype[0], len(X.dtype.names) ))
