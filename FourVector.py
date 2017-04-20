@@ -15,19 +15,58 @@ class FourVector():
 	
 	"""
 
+
 	
-	def __init__(self, InputData = np.zeros((1,4), dtype=[('PE', np.float), ('PX', np.float), ('PY', np.float), ('PZ', np.float)] ) ):
+
+
+	
+	def __init__(self, *argv ):
+		#Try assuming the input is a 4D structured numpy array of type PE, PX, PY, PZ
 		try:
-			data = InputData.copy().view(( InputData.dtype[0], len(InputData.dtype.names) ))
+			data = argv[0].copy().view(( argv[0].dtype[0], len(argv[0].dtype.names) ))
+			self.PE = data[:,0]
+			self.fP = ThreeVector(data[:,1:4])
+			return
 		except:
-				try:
-					data = InputData.copy()
-				except:
-					nev = InputData[0].shape[0]
-					data = np.concatenate( (np.reshape(InputData[0], (nev,1)), np.reshape(InputData[1], (nev,1)), np.reshape(InputData[2], (nev,1)), np.reshape(InputData[3], (nev,1))), axis = 1 )
-			
-		self.PE = data[:,0]
-		self.fP = ThreeVector(data[:,1:4])
+			pass
+		
+		
+		#Try assuming the input data is a 4D ndarray non structured
+		try:
+			data = argv[0].copy()
+			self.PE = data[:,0]
+			self.fP = ThreeVector(data[:,1:4])
+			return
+		except:
+			pass
+		
+		
+		#Try assuming the data is a 4D array
+		try:
+			nev = argv[0].shape[0]
+			data = np.concatenate( (np.reshape(argv[0][0], (nev,1)), np.reshape(argv[0][1], (nev,1)), np.reshape(argv[0][2], (nev,1)), np.reshape(argv[0][3], (nev,1))), axis = 1 )
+			self.PE = data[:,0]
+			self.fP = ThreeVector(data[:,1:4])
+		except:
+			pass
+		
+		#Try using four arguments of single values or lists:
+		try:
+			self.PE = argv[0][3]
+			self.fP = ThreeVector(argv[0][:3])
+			return
+		except:
+			pass
+
+		try:
+			self.PE = argv[3]
+			self.fP = ThreeVector(argv[:3])
+			return
+		except:
+			pass
+		
+		
+
 		
 			
 	def SetXYZM(self, XYZ, M):

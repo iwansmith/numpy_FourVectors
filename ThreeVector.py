@@ -5,21 +5,51 @@ import math
 class ThreeVector:
 
 
-	def __init__(self, InputData = np.zeros((1,3), dtype=[('PX', np.float), ('PY', np.float), ('PZ', np.float)] ) ):
+	def __init__(self, *argv ):
 
 		try:
-			data = InputData.copy().view(( InputData.dtype[0], len(InputData.dtype.names) ))
+			data = argv[0].copy().view(( argv[0].dtype[0], len(argv[0].dtype.names) ))
+			self.PX = data[:,0]
+			self.PY = data[:,1]
+			self.PZ = data[:,2]
+			return
 		except:
-				try:
-					data = InputData.copy()
-
-				except:
-					nev = InputData[0].shape[0]
-					data = np.concatenate( (np.reshape(InputData[0], (nev,1)), np.reshape(InputData[1], (nev,1)), np.reshape(InputData[2], (nev,1))), axis = 1 )
+			pass
 		
-		self.PX = data[:,0]
-		self.PY = data[:,1]
-		self.PZ = data[:,2]
+		try:
+			data = argv[0].copy()
+			self.PX = data[:,0]
+			self.PY = data[:,1]
+			self.PZ = data[:,2]
+			return
+		except:
+			pass
+
+		try:
+			nev = argv[0][0].shape[0]
+			data = np.concatenate( (np.reshape(argv[0][0], (nev,1)), np.reshape(argv[0][1], (nev,1)), np.reshape(argv[0][2], (nev,1))), axis = 1 )
+			self.PX = data[:,0]
+			self.PY = data[:,1]
+			self.PZ = data[:,2]
+			return
+		except:
+			pass
+			
+		try:
+			self.PX = argv[0][0]
+			self.PY = argv[0][1]
+			self.PZ = argv[0][2]
+			return
+		except:
+			pass
+		
+		try:
+			self.PX = argv[0]
+			self.PY = argv[1]
+			self.PZ = argv[2]
+			return
+		except:
+			pass
 		
 	def SetXYZ(self, XYZ):
 		#try:
