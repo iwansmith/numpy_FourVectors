@@ -2,7 +2,7 @@
 import numpy as np
 import math
 
-from ThreeVector import ThreeVector
+from ThreeVector import *
 	
 
 class FourVector():
@@ -14,11 +14,6 @@ class FourVector():
 	X_PE, X_PX, X_PY, X_PZ
 	
 	"""
-
-
-	
-
-
 	
 	def __init__(self, *argv, **kwargs ):
 		#Try assuming the input is a 4D structured numpy array of type PE, PX, PY, PZ
@@ -124,17 +119,27 @@ class FourVector():
 
 		
 			
-	def SetXYZM(self, *argv):
-		
+	def SetXYZM(self, *argv, **kwargs):
+		Debug = False
 		try:
-			self.fP.SetXYZ( *argv[:3] )
+			Debug = kwargs["Debug"]
+		except:
+			pass
+		
+		if Debug:
+			print "Trying initialiser 1"
+		try:
+			self.fP.SetXYZ( argv[0:3] )
 			self.PE = np.sqrt( self.fP.P2() + np.square( argv[3] ) )
 			return
 		except:
 			pass
+		if Debug:
+			print "Trying initialiser 2"
 
 		try:
-			self.fP.SetXYZ( argv[0] )
+			data = CleanData(argv[0])
+			self.fP.SetXYZ( data )
 			self.PE = np.sqrt( self.fP.P2() + np.square( argv[1] ) )
 			return
 		except:

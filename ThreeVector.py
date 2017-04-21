@@ -2,6 +2,30 @@ import numpy as np
 import math
 
 
+
+def CleanData( InData ):
+	try:
+		data = InData.copy().view(( InData.dtype[0], len(InData.dtype.names) ))
+		return data
+	except:
+		pass
+	
+	try:
+		data = InData.copy()
+		return data
+	except:
+		pass
+
+	try:
+		nev = InData[0].shape[0]
+		data = np.concatenate( (np.reshape(InData[0], (nev,1)), np.reshape(InData[1], (nev,1)), np.reshape(InData[2], (nev,1))), axis = 1 )
+		return data
+	except:
+		pass
+
+
+
+
 class ThreeVector:
 
 
@@ -76,6 +100,9 @@ class ThreeVector:
 		
 		
 	def SetXYZ(self, *argv):
+		
+		
+		print "Trying 1"
 		try:
 			self.PX = argv[0].PX.copy()
 			self.PY = argv[0].PY.copy()
@@ -84,15 +111,28 @@ class ThreeVector:
 		except:
 			pass
 		
+		print "Trying 2"
+		
 		try:
-			self.PX = np.asarray(argv[0])
-			self.PY = np.asarray(argv[1])
-			self.PZ = np.asarray(argv[2])
+			print argv[0]
+			print argv[0][:,0]
+			self.PX = argv[0][:,0]
+			self.PY = argv[0][:,1]
+			self.PZ = argv[0][:,2]
 			return
 		except:
 			pass
-		
-		
+			
+		print "Trying 3"
+
+		try:
+			self.PX = np.asarray(argv[:,0])
+			self.PY = np.asarray(argv[:,1])
+			self.PZ = np.asarray(argv[:,2])
+			return
+		except:
+			pass
+
 	def SetX(self, X):
 		try:
 			self.PX = X.copy().view(( X.dtype[0], len(X.dtype.names) ))
